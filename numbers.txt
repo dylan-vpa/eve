@@ -1,0 +1,3 @@
+sip:+573001234567@sip.example.com
+sip:+573001234568@sip.example.com
+sip:+573001234569@sip.example.com 
