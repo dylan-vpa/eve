@@ -95,14 +95,18 @@ ELEVENLABS_CONFIG = {
 # ============================================================================
 
 AI_CONFIG = {
-    'model_type': 'placeholder',  # placeholder, llama, grok, custom
-    'max_response_length': 200,  # caracteres
-    'response_delay': 0.5,  # segundos (simulación)
-    'context_window': 1000,  # caracteres de contexto
-    'temperature': 0.7,  # para modelos generativos
-    'top_p': 0.9,  # para modelos generativos
-    'timeout': 30,  # segundos
-    'retry_attempts': 3,
+    'model_type': os.environ.get("AI_MODEL_TYPE", "ollama"),  # placeholder, ollama, llama, grok, custom
+    'model_name': os.environ.get("AI_MODEL_NAME", "llama2"),
+    'ollama_url': os.environ.get("OLLAMA_URL", "http://localhost:11434"),
+    'max_response_length': int(os.environ.get("AI_MAX_LENGTH", "200")),  # caracteres
+    'response_delay': float(os.environ.get("AI_RESPONSE_DELAY", "0.5")),  # segundos (simulación)
+    'context_window': int(os.environ.get("AI_CONTEXT_WINDOW", "1000")),  # caracteres de contexto
+    'temperature': float(os.environ.get("AI_TEMPERATURE", "0.7")),  # para modelos generativos
+    'top_p': float(os.environ.get("AI_TOP_P", "0.9")),  # para modelos generativos
+    'timeout': int(os.environ.get("AI_TIMEOUT", "30")),  # segundos
+    'retry_attempts': int(os.environ.get("AI_RETRY_ATTEMPTS", "3")),
+    'use_gpu': os.environ.get("AI_USE_GPU", "False").lower() == "true",
+    'device': os.environ.get("AI_DEVICE", "cpu"),  # cpu, cuda, mps
 }
 
 # Respuestas de placeholder (para pruebas)

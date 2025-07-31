@@ -286,19 +286,30 @@ main() {
     # Paso 6: Instalar dependencias Python
     install_python_dependencies
     
-    # Paso 7: Configurar variables de entorno
+    # Paso 7: Instalar Ollama (si es necesario)
+    if [ -f "install_ollama.sh" ]; then
+        echo ""
+        print_status "¿Quieres instalar Ollama para IA local? (y/n)"
+        read -r install_ollama_response
+        if [[ $install_ollama_response =~ ^[Yy]$ ]]; then
+            chmod +x install_ollama.sh
+            bash install_ollama.sh
+        fi
+    fi
+    
+    # Paso 8: Configurar variables de entorno
     setup_environment
     
-    # Paso 8: Crear números de prueba
+    # Paso 9: Crear números de prueba
     create_test_numbers
     
-    # Paso 9: Verificar configuración
+    # Paso 10: Verificar configuración
     if ! verify_configuration; then
         print_error "Error en la configuración. Revisa los archivos necesarios."
         exit 1
     fi
     
-    # Paso 10: Probar APIs (opcional)
+    # Paso 11: Probar APIs (opcional)
     echo ""
     print_status "¿Quieres probar las APIs antes de ejecutar? (y/n)"
     read -r test_response
@@ -310,7 +321,7 @@ main() {
         fi
     fi
     
-    # Paso 11: Preguntar modo de ejecución
+    # Paso 12: Preguntar modo de ejecución
     echo ""
     print_success "✅ TODO CONFIGURADO CORRECTAMENTE"
     echo ""

@@ -5,6 +5,8 @@ Servicio de IA para procesamiento de entrada y generación de respuestas
 import asyncio
 import logging
 import random
+import aiohttp
+import json
 from typing import Optional, Dict, Any, List, Callable
 from datetime import datetime
 
@@ -22,6 +24,8 @@ class AIService:
         
         # Configuración
         self.model_type = AI_CONFIG['model_type']
+        self.model_name = AI_CONFIG['model_name']
+        self.ollama_url = AI_CONFIG['ollama_url']
         self.max_response_length = AI_CONFIG['max_response_length']
         self.response_delay = AI_CONFIG['response_delay']
         self.context_window = AI_CONFIG['context_window']
@@ -79,6 +83,8 @@ class AIService:
             # Procesar según el tipo de modelo
             if self.model_type == 'placeholder':
                 success = await self._process_with_placeholder(response)
+            elif self.model_type == 'ollama':
+                success = await self._process_with_ollama(response)
             elif self.model_type == 'llama':
                 success = await self._process_with_llama(response)
             elif self.model_type == 'grok':
@@ -141,6 +147,65 @@ class AIService:
         except Exception as e:
             logger.error(f"Error en procesamiento placeholder: {e}")
             return False
+    
+    async def _process_with_ollama(self, response: AIResponse) -> bool:
+        """Procesa con modelo Ollama"""
+        try:
+            # Construir prompt con contexto
+            context = response.context
+            conversation_history = context.conversation_history[-5:]  # Últimos 5 mensajes
+            prompt = self._build_prompt(context.user_input, conversation_history)
+            
+            # Llamar a Ollama API
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "model": self.model_name,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "temperature": self.temperature,
+                        "top_p": self.top_p,
+                        "num_predict": self.max_response_length
+                    }
+                }
+                
+                async with session.post(
+                    f"{self.ollama_url}/api/generate",
+                    json=payload,
+                    timeout=aiohttp.ClientTimeout(total=self.timeout)
+                ) as resp:
+                    if resp.status == 200:
+                        result = await resp.json()
+                        response.text = result.get('response', '').strip()
+                        response.status = AIResponseStatus.COMPLETED
+                        response.confidence = 0.9  # Ollama no proporciona confianza
+                        response.relevance_score = 0.85
+                        
+                        logger.info(f"Respuesta de Ollama generada: {response.text[:50]}...")
+                        return True
+                    else:
+                        logger.error(f"Error en API de Ollama: {resp.status}")
+                        return False
+                        
+        except Exception as e:
+            logger.error(f"Error en procesamiento Ollama: {e}")
+            return False
+    
+    def _build_prompt(self, user_input: str, conversation_history: List[str]) -> str:
+        """Construye el prompt para Ollama"""
+        prompt = "Eres un asistente de voz amigable y útil. Responde de manera natural y conversacional.\n\n"
+        
+        # Agregar historial de conversación
+        if conversation_history:
+            prompt += "Historial de la conversación:\n"
+            for i, msg in enumerate(conversation_history, 1):
+                prompt += f"{i}. {msg}\n"
+            prompt += "\n"
+        
+        prompt += f"Usuario: {user_input}\n"
+        prompt += "Asistente:"
+        
+        return prompt
     
     async def _process_with_llama(self, response: AIResponse) -> bool:
         """Procesa con modelo LLaMA"""
