@@ -30,7 +30,7 @@ class AIService:
                         logger.error("❌ Ollama no responde correctamente")
                         return False
         except Exception as e:
-            logger.error(f"❌ Error conectando con Ollama: {e}")
+            logger.error(f"❌ Error conectando con Ollama: {self.host}/api/tags - {e}")
             return False
     
     async def generate_response(self, text: str) -> Optional[str]:

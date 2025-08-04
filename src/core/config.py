@@ -12,26 +12,26 @@ class Config:
     """Central configuration class"""
     
     # SIP Configuration
-    SIP_HOST = os.getenv("SIP_HOST", "sip.example.com")
-    SIP_USERNAME = os.getenv("SIP_USERNAME", "your_username")
-    SIP_PASSWORD = os.getenv("SIP_PASSWORD", "your_password")
-    SIP_PORT = int(os.getenv("SIP_PORT", "5060"))
+    SIP_HOST = os.environ.get("SIP_HOST", "sip.example.com")
+    SIP_USERNAME = os.environ.get("SIP_USERNAME", "your_username")
+    SIP_PASSWORD = os.environ.get("SIP_PASSWORD", "your_password")
+    SIP_PORT = int(os.environ.get("SIP_PORT", "5060"))
     
     # Deepgram STT
-    DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY", "")
+    DEEPGRAM_API_KEY = os.environ.get("DEEPGRAM_API_KEY", "")
     
     # ElevenLabs TTS
-    ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
-    ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "")
+    ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
+    ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "")
     
-    # Ollama AI
-    OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-    OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama2")
+    # Ollama AI - Always use localhost for Ollama
+    OLLAMA_HOST = "http://localhost:11434"
+    OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama2")
     
     # Server Configuration
-    HOST = os.getenv("HOST", "0.0.0.0")
-    PORT = int(os.getenv("PORT", "8000"))
-    DEBUG = os.getenv("DEBUG", "true").lower() == "true"
+    HOST = os.environ.get("HOST", "0.0.0.0")
+    PORT = int(os.environ.get("PORT", "8000"))
+    DEBUG = os.environ.get("DEBUG", "true").lower() == "true"
     
     @classmethod
     def validate(cls) -> Dict[str, Any]:
