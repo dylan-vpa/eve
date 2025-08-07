@@ -66,6 +66,7 @@ Exten: s
 Priority: 1
 Callerid: paradixe01
 Timeout: 30000
+Async: yes
 \r\n"""
             
             self.socket.send(originate_msg.encode())
