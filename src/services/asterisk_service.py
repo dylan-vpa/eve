@@ -54,6 +54,8 @@ class AsteriskService:
             
             # Remove + and @ from number for dialing
             clean_number = number.replace("+", "").replace("@1998010101.tscpbx.net", "")
+            # Remove sip: prefix if present
+            clean_number = clean_number.replace("sip:", "")
             
             logger.info(f"📞 Llamando a: {clean_number}")
             
@@ -65,6 +67,16 @@ Exten: s
 Priority: 1
 Callerid: paradixe01
 \r\n"""
+            
+            self.socket.send(originate_msg.encode())
+            
+            # Wait for response
+            response = ""
+            while True:
+                data = self.socket.recv(1024).decode()
+                response += data
+                if "\r\n\r\n" in response:
+                    break
             
             self.socket.send(originate_msg.encode())
             response = self.socket.recv(1024).decode()
