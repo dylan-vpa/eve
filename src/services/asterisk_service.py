@@ -59,13 +59,14 @@ class AsteriskService:
             
             logger.info(f"📞 Llamando a: {clean_number}")
             
-            # Originate call via AMI
-            originate_msg = f"""Action: Originate
+                                    # Originate call via AMI
+                        originate_msg = f"""Action: Originate
 Channel: SIP/paradixe01/{clean_number}
 Context: paradixe
 Exten: s
 Priority: 1
 Callerid: paradixe01
+Timeout: 30000
 \r\n"""
             
             self.socket.send(originate_msg.encode())
