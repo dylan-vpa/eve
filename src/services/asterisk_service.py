@@ -34,7 +34,6 @@ class AsteriskService:
                 if "\r\n\r\n" in response:
                     break
             
-            response = self.socket.recv(1024).decode()
             if "Success" in response:
                 self.is_connected = True
                 logger.info("✅ Conectado a Asterisk AMI")
