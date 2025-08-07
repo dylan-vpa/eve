@@ -85,10 +85,8 @@ Callerid: paradixe01
                 logger.info("✅ Llamada iniciada correctamente")
                 return True
             else:
-                logger.warning(f"⚠️ Simulando llamada exitosa (peer no registrado): {response}")
-                # Simular llamada exitosa para pruebas
-                logger.info("🎭 Simulando llamada exitosa para pruebas del sistema")
-                return True
+                logger.error(f"❌ Error iniciando llamada: {response}")
+                return False
                 
         except Exception as e:
             logger.error(f"❌ Error haciendo llamada: {e}")
