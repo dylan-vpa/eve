@@ -26,6 +26,14 @@ class AsteriskService:
             login_msg = f"Action: Login\r\nUsername: {self.ami_username}\r\nSecret: {self.ami_secret}\r\n\r\n"
             self.socket.send(login_msg.encode())
             
+            # Wait for response
+            response = ""
+            while True:
+                data = self.socket.recv(1024).decode()
+                response += data
+                if "\r\n\r\n" in response:
+                    break
+            
             response = self.socket.recv(1024).decode()
             if "Success" in response:
                 self.is_connected = True
