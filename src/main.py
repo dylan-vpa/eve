@@ -96,17 +96,17 @@ class SIPAIApplication:
             await self.shutdown()
     
     async def _read_numbers_file(self) -> List[str]:
-        """Read numbers from numbers.txt file"""
+        """Read numbers from data/numbers.txt file"""
         try:
-            if os.path.exists("numbers.txt"):
-                with open("numbers.txt", "r") as f:
+            if os.path.exists("data/numbers.txt"):
+                with open("data/numbers.txt", "r") as f:
                     numbers = [line.strip() for line in f.readlines() if line.strip()]
                 return numbers
             else:
-                logger.warning("⚠️ Archivo numbers.txt no encontrado")
+                logger.warning("⚠️ Archivo data/numbers.txt no encontrado")
                 return []
         except Exception as e:
-            logger.error(f"❌ Error leyendo numbers.txt: {e}")
+            logger.error(f"❌ Error leyendo data/numbers.txt: {e}")
             return []
     
     async def shutdown(self) -> None:
