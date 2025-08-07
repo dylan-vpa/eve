@@ -59,8 +59,8 @@ class AsteriskService:
             
             logger.info(f"📞 Llamando a: {clean_number}")
             
-                                    # Originate call via AMI
-                        originate_msg = f"""Action: Originate
+            # Originate call via AMI
+            originate_msg = f"""Action: Originate
 Channel: SIP/paradixe01/{clean_number}
 Context: paradixe
 Exten: s
@@ -78,9 +78,6 @@ Timeout: 30000
                 response += data
                 if "\r\n\r\n" in response:
                     break
-            
-            self.socket.send(originate_msg.encode())
-            response = self.socket.recv(1024).decode()
             
             if "Success" in response:
                 logger.info("✅ Llamada iniciada correctamente")
